@@ -92,8 +92,6 @@ logging.basicConfig(level=logging.INFO)
 
 
 # Utility/Helper Functions ----------------------------------------------------------- #
-
-
 def count_elements(xs):
     counts = {x: 0 for x in xs}
 
@@ -138,8 +136,6 @@ def encrypt(server_url, nonce, counter, plaintext):
 
 
 # Attack --------------------------------------------------------------------- #
-
-
 def test_key(nonce, counter, counter_size, key, plaintext, expected_ciphertext):
     """
     Use our own RC4 implementation to test whether our current guess
@@ -236,7 +232,7 @@ def attack(num_samples, server_url, nonce_size, counter_size, block_size, cache)
         candidate_key_bytes = []
 
         for counter, keystream in samples:
-            known_bytes = nonce + counter + key[0 : len(key) + 1]
+            known_bytes = nonce + counter + key
             num_known_bytes = len(known_bytes)
 
             # We know the first num_known_bytes of the key, so we can
