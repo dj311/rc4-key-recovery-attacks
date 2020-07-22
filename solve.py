@@ -215,7 +215,7 @@ def attack(num_samples, server_url, nonce_size, counter_size, block_size, cache)
         nonce, samples = read_cache(cache)
 
     if samples == []:
-        nonce = secrets.token_bytes(nonce_size)
+        nonce = b"A" * nonce_size  # Constant nonce - could just as well be secrets.token_bytes()
         for counter in range(num_samples):
             plaintext = secrets.token_bytes(block_size)
             ciphertext = bytes.fromhex(
