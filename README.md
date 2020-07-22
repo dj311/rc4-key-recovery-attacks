@@ -5,4 +5,7 @@ This is a chosen-plaintext attack that recovers the private key in around 100,00
 
 [`server.py`](./server.py) implements the encryption scheme, exposed via an API endpoint. Check the docstring and source code for a description of the scheme. [`solve.py`](./solve.py) implements the attack. Check the docstring and source code for details on how the attack works. This was written as a learning exercise, and I've tried to document how and why it works (up to the limit of inline code comments). It could do with more though.
 
-I'm planning on hosting a live oracle server to let people mount this attack against something real. I'll add a link when the server is up.
+There is a live version of the server on my website. You can extract it's key by running:
+```
+$ python3 solve.py --cache=samples-djwj.csv --server=https://danielwilshirejones.com
+```
