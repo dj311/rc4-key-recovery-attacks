@@ -168,7 +168,6 @@ def encrypt(server_url, nonce, counter, plaintext):
     return response.text.strip()
 
 
-# Attack --------------------------------------------------------------------- #
 def test_key(nonce, counter, counter_size, key, plaintext, expected_ciphertext):
     """
     Use our own RC4 implementation to test whether our current guess
@@ -194,6 +193,7 @@ def test_key(nonce, counter, counter_size, key, plaintext, expected_ciphertext):
         return False
 
 
+# Attack --------------------------------------------------------------------- #
 def attack(num_samples, server_url, nonce_size, counter_size, block_size, cache):
     logging.info(
         "Sample a single (nonce, counter, plaintext, ciphertext) record "
