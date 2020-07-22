@@ -75,6 +75,20 @@ logging.basicConfig(level=logging.INFO)
 
 
 # Utility/Helper Functions ----------------------------------------------------------- #
+def try_convert_bytes_to_string(bs):
+    try:
+        return bs.decode("utf-8")
+    except:
+        pass
+
+    try:
+        return bs.decode("ascii")
+    except:
+        pass
+
+    return "<string conversion failed>"
+
+
 def count_elements(xs):
     counts = {x: 0 for x in xs}
 
@@ -319,7 +333,7 @@ def attack(num_samples, server_url, nonce_size, counter_size, block_size, cache)
             chosen_key_byte,
             len(key),
             key.hex(),
-            key.decode("utf-8"),
+            try_convert_bytes_to_string(key),
         )
 
     logging.info(
