@@ -61,7 +61,7 @@ import csv
 import docopt
 import logging
 import requests
-import secrets
+import random
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -72,6 +72,11 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms
 from operator import xor
 
 logging.basicConfig(level=logging.INFO)
+
+# Use a deterministic random function to make nonce's and plaintexts
+# more cache friendly for my server. This doesn't affect the attack,
+# these could be constant and it would still work.
+random.seed(b"RC4KEYRECOVERY")
 
 
 # Utility/Helper Functions ----------------------------------------------------------- #
@@ -194,9 +199,9 @@ def attack(num_samples, server_url, nonce_size, counter_size, block_size, cache)
         "Sample a single (nonce, counter, plaintext, ciphertext) record "
         "from the oracle. This will act as our test suite.",
     )
-    test_pt = secrets.token_bytes(block_size)
-    test_nonce = secrets.token_bytes(nonce_size)
-    test_counter = secrets.randbelow(1000)
+    test_pt = bytes(random.sample(range(256), block_size))
+    test_nonce = bytes(random.sample(range(256), nonce_size))
+    test_counter = random.randint(0, 1000)
     test_ct = bytes.fromhex(
         encrypt(server_url, test_nonce.hex(), test_counter, test_pt.hex())
     )
@@ -215,9 +220,10 @@ def attack(num_samples, server_url, nonce_size, counter_size, block_size, cache)
         nonce, samples = read_cache(cache)
 
     if samples == []:
-        nonce = b"A" * nonce_size  # Constant nonce - could just as well be secrets.token_bytes()
+        nonce = bytes(random.sample(range(256), nonce_size))
         for counter in range(num_samples):
-            plaintext = secrets.token_bytes(block_size)
+            plaintext = bytes(random.sample(range(256), block_size))
+
             ciphertext = bytes.fromhex(
                 encrypt(server_url, nonce.hex(), counter, plaintext.hex())
             )
