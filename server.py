@@ -81,11 +81,16 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms
 from flask import Flask
 
 
-RC4_KEY = None
-COUNTERSIZE = None
-NONCESIZE = None
-BLOCKSIZE = None
-KEYSIZE = None
+RC4_KEY = os.getenv("RC4_KEY")
+if isinstance(RC4_KEY, str):
+    RC4_KEY = bytes(RC4_KEY, "utf-8")
+
+KEYSIZE = 13
+COUNTERSIZE = 3
+NONCESIZE = 16
+BLOCKSIZE = 48
+
+
 URL_PREFIX = "/rc4-ctr"
 
 
@@ -122,6 +127,7 @@ def encrypt(nonce, counter, data):
     return ciphertext_bytes.hex()
 
 
+
 if __name__ == "__main__":
     args = docopt.docopt(__doc__)
 
@@ -130,11 +136,8 @@ if __name__ == "__main__":
     NONCESIZE = int(args["--nonce_size"])
     BLOCKSIZE = int(args["--block_size"])
 
-    RC4_KEY = os.getenv("RC4_KEY")
-    if not isinstance(RC4_KEY, str):
+    if not isinstance(RC4_KEY, bytes):
         logging.error("The RC4_KEY environment variable must be set.")
         quit()
-
-    RC4_KEY = bytes(RC4_KEY, "utf-8")
 
     app.run(debug=args["--debug"], host=args["--hostname"], port=args["--port"])
