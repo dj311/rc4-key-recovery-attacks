@@ -75,6 +75,37 @@ logging.basicConfig(level=logging.INFO)
 
 
 # Utility/Helper Functions ----------------------------------------------------------- #
+def read_cache(path):
+    try:
+        samples = []
+        nonce = None
+
+        with open(path, "r", newline="") as cache_file:
+            cache_reader = csv.reader(cache_file)
+            for row in cache_reader:
+                nonce = bytes.fromhex(row[0])
+                samples.append((bytes.fromhex(row[1]), bytes.fromhex(row[2])))
+
+    except Exception as e:
+        logging.warning(
+            "Failed to load cache, filling a new one in the path specified.",
+            exc_info=e,
+        )
+
+    return nonce, samples
+
+
+def write_cache(path, nonce, samples):
+    try:
+        with open(path, "w", newline="") as cache_file:
+            cache_writer = csv.writer(cache_file)
+            for counter, keystream in samples:
+                cache_writer.writerow([nonce.hex(), counter.hex(), keystream.hex()])
+
+    except Exception as e:
+        logging.error("Failed to save cache.", exc_info=e)
+
+
 def try_convert_bytes_to_string(bs):
     try:
         return bs.decode("utf-8")
@@ -179,22 +210,10 @@ def attack(num_samples, server_url, nonce_size, counter_size, block_size, cache)
     nonce = None
     samples = []
 
-    # Try to load in from the cache
+    # Take samples (loading and saving to cache as needed)
     if cache is not None:
-        try:
-            with open(cache, "r", newline="") as cache_file:
-                cache_reader = csv.reader(cache_file)
-                for row in cache_reader:
-                    nonce = bytes.fromhex(row[0])
-                    samples.append((bytes.fromhex(row[1]), bytes.fromhex(row[2])))
+        nonce, samples = read_cache(cache)
 
-        except Exception as e:
-            logging.warning(
-                "Failed to load cache, filling a new one in the path specified.",
-                exc_info=e,
-            )
-
-    # If loading failed, or the cache wasn't given, take samples now.
     if samples == []:
         nonce = secrets.token_bytes(nonce_size)
         for counter in range(num_samples):
@@ -211,16 +230,8 @@ def attack(num_samples, server_url, nonce_size, counter_size, block_size, cache)
             )
             samples.append((counter, keystream))
 
-    # Try to save our samples to the cache
     if cache is not None:
-        try:
-            with open(cache, "w", newline="") as cache_file:
-                cache_writer = csv.writer(cache_file)
-                for counter, keystream in samples:
-                    cache_writer.writerow([nonce.hex(), counter.hex(), keystream.hex()])
-
-        except Exception as e:
-            logging.error("Failed to save cache.", exc_info=e)
+        write_cache(cache, nonce, samples)
 
     logging.info("Iteratively learn each byte of the key in series.")
 
