@@ -195,12 +195,16 @@ def test_key(nonce, counter, counter_size, key, plaintext, expected_ciphertext):
 
 # Attack --------------------------------------------------------------------- #
 #
-# How does this attack work? The RC4 algorithm is relatively simple,
+# How does this attack work? The RC4 algorithm is relatively simple
 # and easy to follow. If you reduce the size of the initial state from
 # 256 to say 16 bytes, it can be stepped through with a pen and
 # paper. This is definitely worth doing if you want to get a good
 # intuitive understanding of how the internal state develops as a
 # function of its inputs.
+#
+# Boneh and Shoup's "A Graduate Course in Cryptography" provides a
+# great explanation. Skip to page 90:
+#   https://toc.cryptobook.us/book.pdf#page=90
 #
 # This simplicity makes it practical for us to inspect and model the
 # algorithms behavior in hypothetical situations. We can say things
@@ -215,17 +219,17 @@ def test_key(nonce, counter, counter_size, key, plaintext, expected_ciphertext):
 #     about the internal state at the end of the key scheduling stage?
 #     This is what our attack starts with.
 #
-# As part of this analysis you can model direct relationships: what can we
-# determine for certain? However, the purpose of RC4 (and other stream
+# As part of this analysis you could model direct relationships: what can we
+# know for certain? However, the purpose of RC4 (and other stream
 # ciphers), is to take in ordered inputs and scramble them to create
-# randomness.
+# randomness. So this approach is pretty hard, by design.
 #
 # An alternative approach is to look at this from a probability
 # standpoint. For example, given the keys first byte is 123, what is
 # the likelihood the first output byte of the cipher is 123? An ideal
 # cipher would have a uniform distribution for all output bytes. Can
 # we do better using our understanding of the algorithm? It turns out
-# in the example I just gave, you totally 100% can! This is a slight
+# in the example I just gave, you Atotally 100% can! This is a slight
 # aside to the attack we are looking at today, but it was shown TODO.
 #
 # This attack starts with the following assumptions:
