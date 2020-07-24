@@ -110,6 +110,10 @@ def write_cache(path, nonce, samples):
         logging.error("Failed to save cache.", exc_info=e)
 
 
+def random_bytes(length):
+    return bytes(random.sample(range(256), length))
+
+
 def try_convert_bytes_to_string(bs):
     try:
         return bs.decode("utf-8")
@@ -201,8 +205,8 @@ def attack(num_samples, server_url, nonce_size, counter_size, block_size, cache)
         "Sample a single (nonce, counter, plaintext, ciphertext) record "
         "from the oracle. This will act as our test suite.",
     )
-    test_pt = bytes(random.sample(range(256), block_size))
-    test_nonce = bytes(random.sample(range(256), nonce_size))
+    test_pt = random_bytes(block_size)
+    test_nonce = random_bytes(nonce_size)
     test_counter = random.randint(0, 1000)
     test_ct = bytes.fromhex(
         encrypt(server_url, test_nonce.hex(), test_counter, test_pt.hex())
@@ -222,9 +226,9 @@ def attack(num_samples, server_url, nonce_size, counter_size, block_size, cache)
         nonce, samples = read_cache(cache)
 
     if samples == []:
-        nonce = bytes(random.sample(range(256), nonce_size))
+        nonce = random_bytes(nonce_size)
         for counter in range(num_samples):
-            plaintext = bytes(random.sample(range(256), block_size))
+            plaintext = random_bytes(block_size)
 
             ciphertext = bytes.fromhex(
                 encrypt(server_url, nonce.hex(), counter, plaintext.hex())
