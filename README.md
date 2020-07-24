@@ -5,7 +5,7 @@ This is a chosen-plaintext attack that recovers the private key in around 100,00
 
  - [`server.py`](./server.py) implements the encryption scheme, exposed via an API endpoint. Check the docstring and source code for a description of the scheme. 
  - [`solve.py`](./solve.py) implements the attack. Check the docstring and source code for implementation details on how the attack works.
- - [`attack.md`](./attack.md) is a write-up of the attack, intended to accompany and explain the code in `solve.py`.
+ - [`attack.md`](./attack.md) is a write-up of the attack, intended to accompany and explain the code in `solve.py` (work-in-progress).
 
 This was all written as a learning exercise, and I've tried to document how and why it works. Hopefully this is a useful accompaniment to the [original paper](https://engineering.purdue.edu/ece404/Resources/AndreasKlein.pdf).
 
