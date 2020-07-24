@@ -12,14 +12,13 @@ implementation, and https://danielwilshirejones.com/rc4-ctr for the
 full spiel.
 
 Usage:
-  solve.py [--server=<url>] [--samples=<int>] [--key_size=<int>] [--counter_size=<int>] [--nonce_size=<int>] [--block_size=<int>] [--cache=<path>]
+  solve.py [--server=<url>] [--samples=<int>] [--counter_size=<int>] [--nonce_size=<int>] [--block_size=<int>] [--cache=<path>]
   solve.py (-h | --help)
 
 Options:
   -h --help             Show this screen.
   --server=<url>        URL of server to attack [default: http://localhost:5000].
   --samples=<int>       Number of samples to take [default: 100000].
-  --key_size=<int>      Size of key in bytes [default: 13].
   --counter_size=<int>  Size of block counter in bytes [default: 3].
   --nonce_size=<int>    Size of per-session nonce in bytes [default: 16].
   --block_size=<int>    Size of each block in bytes [default: 48].
